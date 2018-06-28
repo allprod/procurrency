@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Procurrency. The currency converter</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+        <meta name="theme-color" content="#001122" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <link rel="icon" sizes="192x192" href="icon.png"/>
+        <link rel="apple-touch-icon" sizes="192x192" href="ios-icon.png"/>
+        <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+        <script src="main.js"></script>
+    </head>
+    <body onload="window.scrollTo(0, 1);">
+        <form>
+            <label for="from_currency">Source ammount:</label><br/>
+            <select id="from_currency"></select>
+            <input type="number" name="from_ammount" pattern="[0-9]+" id="from_ammount" placeholder="Source currency ammount" autofocus autocomplete="off" required/><br/>
+            <label for="to_currency">Converted ammount:</label><br/>
+            <select id="to_currency"></select>
+        </form>
+    </body>
+</html>
