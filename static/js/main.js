@@ -63,8 +63,8 @@ register_serviceWorker();
 
 function fetch_currencies(){
     fetch(currency_query).then(response => {
-        console.log(response.body);
-        const currency_objs = JSON.parse(Response.body);
+        console.log(response.json);
+        const currency_objs = JSON.parse(Response.json);
         
         const currencies = currency_objs['results'];
     })
