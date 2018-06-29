@@ -13,7 +13,14 @@ function make_money({currency_name = 'fake money', currency_symbol = 'replace me
     return {currencyName: currency_name, currencySymbol: currency_symbol, id: id};
 }
 
-function openDatabase(){
+function convert(){
+    from_amt = document.getElementById('from_ammount');
+    to_amt = document.getElementById('to_ammount');
+
+
+}
+
+function open_database(){
     if(!navigator.serviceWorker) return Promise.resolve();
 
     return idb.open('procurrency', 1, upgradeDb => {
@@ -67,7 +74,7 @@ function update_ready(worker){
     //TODO: Do something in here
 }
 
-const db_promise = openDatabase();
+const db_promise = open_database();
 register_serviceWorker();
 
 window.addEventListener('beforeinstallprompt', e => {
@@ -98,7 +105,7 @@ function fetch_currencies(){
             entries = Object.entries(currencies);
             for(entry of entries){
                 money = make_money({currency_name : entry[1].currencyName, currency_symbol: entry[1].currencySymbol, id: entry[1].id});
-                console.log(money);
+                //console.log(money);
                 //store.put(entry[1]);
                 store.put(money);
             }
@@ -121,13 +128,21 @@ function get_currencies(){
 
             for (const currency of currencies) {
                 const opt = document.createElement("option");
-                opt.textContent = `${currency.currencyName} (${currencySymbol})`;
+                const opt2 = document.createElement("option");
+                opt.textContent = `${currency.currencyName} (${currency.currencySymbol})`;
+                opt.setAttribute('value', currency.id);
+                opt2.textContent = `${currency.currencyName} (${currency.currencySymbol})`;
+                opt2.setAttribute('value', currency.id);
+
+                if(currency.id === 'USD') opt.setAttribute('selected', '');
+
                 from_list.appendChild(opt);
-                to_list.appendChild(opt);
+                to_list.appendChild(opt2);
             }
         })
     });
-    //currency_objs = 
 }
+
+
 fetch_currencies();
 get_currencies();

@@ -10,18 +10,28 @@
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <link rel="icon" sizes="192x192" href="icon.png"/>
         <link rel="apple-touch-icon" sizes="192x192" href="ios-icon.png"/>
+        <meta name="msapplication-TileImage" content="images/icons/icon-144x144.png" />
+        <meta name="msapplication-TileColor" content="##26c6da" />
         <link rel="stylesheet" type="text/css" media="screen" href="./static/css/main.css" />
         <script src="./static/js/idb.js"></script>
-        <script src="./static/js/main.js"></script>
+        <script src="./static/js/main.js" async></script>
     </head>
+    <header class="header">
+        <h1 class="header_title">Procurrency Mobile Currency converter</h1>
+    </header>
     <body onload="window.scrollTo(0, 1);">
-        <form>
+        <form id="input_form">
             <label for="from_currency">Source ammount:</label><br/>
-            <select id="from_currency"></select><br/>
-            <input type="number" name="from_ammount" id="from_ammount" placeholder="Source currency ammount" autofocus autocomplete="off" required/><br/>
+            <select id="from_currency" form="input_form" /><br/>
+            <input type="number" name="from_ammount" id="from_ammount" placeholder="Source currency ammount" autofocus autocomplete="off" form="input_form" required/><br/>
             <label for="to_currency">Converted ammount:</label><br/>
-            <select id="to_currency"></select><br/>
-            <input type="number" disabled="disabled" name='to_ammount' id="to_ammount" placeholder="Waiting for conversion" />
+            <select id="to_currency" form="input_form" /><br/>
+            <input type="number" disabled="disabled" name='to_ammount' id="to_ammount" placeholder="Enter details and press convert" form="input_form" />
+            <button onclick="convert()" form="input_form" form="input_form">convert</button>
         </form>
+
+        <footer>
+            <div>Favicon and app icon Made by <a href="https://www.flaticon.com/authors/eucalyp" title="Eucalyp">Eucalyp</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+        </footer>
     </body>
 </html>
