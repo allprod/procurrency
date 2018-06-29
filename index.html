@@ -24,7 +24,7 @@
         <h1 class="header_title">Procurrency Mobile Currency converter</h1>
     </header>
     <body onload="window.scrollTo(0, 1);">
-        <form id="input_form">
+        <form id="input_form" onsubmit="return convert()">
             <label for="from_currency">Source ammount:</label><br/>
             <select id="from_currency" form="input_form" /><br/>
             <input type="number" name="from_ammount" id="from_ammount" placeholder="Source currency ammount" autofocus autocomplete="off" form="input_form" required/><br/>
