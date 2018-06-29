@@ -62,12 +62,14 @@ const db_promise = openDatabase();
 register_serviceWorker();
 
 function fetch_currencies(){
-    fetch(currency_query).then(response => {
-        console.log(response.json);
-        const currency_objs = JSON.parse(Response.json);
+    let currencies;
+    fetch(currency_query).then(response => response.json()).then(res_json => {
+        console.log(res_json);
+        const currency_objs = JSON.parse(res_json);
         
-        const currencies = currency_objs['results'];
-    })
+        currencies = currency_objs['results'];
+    });
+
     db_promise.then(db => {
         if(!db) return;
 
