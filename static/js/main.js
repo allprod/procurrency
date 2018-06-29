@@ -29,6 +29,7 @@ function convert(){
         
         to_amt.value = ammount.toFixed(2);
     }).catch( error => console.log('There has been a problem with the convertion rate fetch operation: ', error.message));
+    return false;
 }
 
 function open_database(){
@@ -155,6 +156,3 @@ function get_currencies(){
 
 fetch_currencies();
 
-con_btn = document.getElementById('convert_btn');
-
-con_btn.addEventListener('click', )
