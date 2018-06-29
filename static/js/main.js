@@ -91,7 +91,9 @@ function get_currencies(){
 
             for (const currency of currencies) {
                 const opt = document.createElement("option");
-                opt.textContent = `${currency.currencyName} (${currencySymbol})`
+                opt.textContent = `${currency.currencyName} (${currencySymbol})`;
+                from_list.appendChild(opt);
+                to_list.appendChild(opt);
             }
         })
     });
