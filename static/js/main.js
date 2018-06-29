@@ -1,12 +1,12 @@
 const currency_store_name = 'currencies';
 const conversion_store_name = 'conversions';
 const currency_query = 'https://free.currencyconverterapi.com/api/v5/currencies';
-let convertion_query = 'https://free.currencyconverterapi.com/api/v5/convert?q=USD_PHP&compact=ultra';
+
 //let deffered_prompt;
 
 function make_money({currency_name = 'fake money', currency_symbol = 'replace me', id = 'fakeness'} = {}){
     // money error. exit
-    //if(currency_name === 'fake money') return undefined;
+    if(currency_name === 'fake money') return undefined;
     if (currency_symbol === 'replace me') {
         currency_symbol = id;
     }
@@ -16,8 +16,19 @@ function make_money({currency_name = 'fake money', currency_symbol = 'replace me
 function convert(){
     from_amt = document.getElementById('from_ammount');
     to_amt = document.getElementById('to_ammount');
+    from_currency = document.getElementById('from_currency').value;
+    to_currency = document.getElementById('to_currency').value;
 
-
+    const query = `${from_currency}_${to_currency}`;
+    const convertion_query = `https://free.currencyconverterapi.com/api/v5/convert?q=${query}&compact=ultra`;
+    fetch(convertion_query).then(response => {if(response.ok)  response.json()}).then(conversion => {
+        const rate = conversion[query].value;
+        const source_ammount = parseInt(from_amt.value, 10);
+        const ammount = rate * source_ammount;
+        conversion.log(rate);
+        
+        to_amt.value = ammount.toFixed(2);
+    }).catch( error => console.log('There has been a problem with the convertion rate fetch operation: ', error.message));
 }
 
 function open_database(){
@@ -110,9 +121,7 @@ function fetch_currencies(){
                 store.put(money);
             }
         });
-    }).catch(function(error) {
-        console.log('There has been a problem with your fetch operation: ', error.message);
-      });
+    }).catch( error => console.log('There has been a problem with your currency fetch operation: ', error.message));
 }
 
 function get_currencies(){

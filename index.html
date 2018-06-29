@@ -4,17 +4,21 @@
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title>Procurrency. The currency converter</title>
-        <link rel="manifest" href="/manifest.json" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+        <link rel="manifest" href="./manifest.json" />
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <meta name="apple-mobile-web-app-title" content="Procurrency Currency Converter">
+        <link rel="apple-touch-icon" href="images/icons/icon-152x152.png">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#3367D6" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <link rel="icon" sizes="192x192" href="icon.png"/>
-        <link rel="apple-touch-icon" sizes="192x192" href="ios-icon.png"/>
-        <meta name="msapplication-TileImage" content="images/icons/icon-144x144.png" />
-        <meta name="msapplication-TileColor" content="##26c6da" />
+        <link rel="icon" sizes="192x192" href="./images/icons/icon.png"/>
+        <link rel="apple-touch-icon" sizes="192x192" href="./images/icons/ios-icon.png"/>
         <link rel="stylesheet" type="text/css" media="screen" href="./static/css/main.css" />
         <script src="./static/js/idb.js"></script>
-        <script src="./static/js/main.js" async></script>
+        <script src="./static/js/main.js"></script>
+        <meta name="msapplication-TileImage" content="./images/icons/icon-144x144.png" />
+        <meta name="msapplication-TileColor" content="##26c6da" />
     </head>
     <header class="header">
         <h1 class="header_title">Procurrency Mobile Currency converter</h1>
@@ -27,7 +31,7 @@
             <label for="to_currency">Converted ammount:</label><br/>
             <select id="to_currency" form="input_form" /><br/>
             <input type="number" disabled="disabled" name='to_ammount' id="to_ammount" placeholder="Enter details and press convert" form="input_form" />
-            <button onclick="convert()" form="input_form" form="input_form">convert</button>
+            <button onclick="convert();" form="input_form">convert</button>
         </form>
 
         <footer>
