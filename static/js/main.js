@@ -98,9 +98,10 @@ function fetch_currencies(){
             
             entries = Object.entries(currencies);
             for(entry of entries){
-                //console.log(entry[1]);
+                money = make_money(entry[1].currencyName, entry[1].currencySymbol, entry[1].id)
+                console.log(money);
                 //store.put(entry[1]);
-                store.put(make_money(entry[1].currencyName, entry[1].currencySymbol, entry[1].id));
+                store.put(money);
             }
         });
     }).catch(function(error) {
