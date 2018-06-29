@@ -6,7 +6,7 @@ let convertion_query = 'https://free.currencyconverterapi.com/api/v5/convert?q=U
 
 function make_money({currency_name = 'fake money', currency_symbol = 'replace me', id = 'fakeness'} = {}){
     // money error. exit
-    if(currency_name === 'fake money') return undefined;
+    //if(currency_name === 'fake money') return undefined;
     if (currency_symbol === 'replace me') {
         currency_symbol = id;
     }
@@ -98,7 +98,7 @@ function fetch_currencies(){
             
             entries = Object.entries(currencies);
             for(entry of entries){
-                money = make_money(entry[1].currencyName, entry[1].currencySymbol, entry[1].id)
+                money = make_money({currency_name : entry[1].currencyName, currency_symbol: entry[1].currencySymbol, id: entry[1].id});
                 console.log(money);
                 //store.put(entry[1]);
                 store.put(money);
