@@ -26,14 +26,6 @@ self.addEventListener('activate', event => {
 
 
 self.addEventListener('fetch', event => {
-    const request_url = new URL(event.request.url);
-
-    if(request_url.origin === location.origin){
-        if(request_url.pathname === '/'){
-            event.respondWith(caches.match('/skeleton'))
-        }
-    }
-
     event.respondWith(
         caches.match(event.request).then(response => response || fetch(event.request))
     );
