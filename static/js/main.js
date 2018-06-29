@@ -2,7 +2,7 @@ const currency_store_name = 'currencies';
 const conversion_store_name = 'conversions';
 const currency_query = 'https://free.currencyconverterapi.com/api/v5/currencies'
 let convertion_query = 'https://free.currencyconverterapi.com/api/v5/convert?q=USD_PHP&compact=ultra'
-let deffered_prompt;
+//let deffered_prompt;
 
 function openDatabase(){
     if(!navigator.serviceWorker) return Promise.resolve();
@@ -10,12 +10,12 @@ function openDatabase(){
     return idb.open('procurrency', 1, upgradeDb => {
         const curency_store = upgradeDb.createObjectStore(currency_store_name, {
             // TODO: Make a primary key here
-            keypath: 'currencyName'
+            keypath: 'id'
         });
         const conversion_store = upgradeDb.createObjectStore(conversion_store_name, {
         })
         //TODO: Create indexes here
-        //curency_store.createIndex('name', 'currencyName');
+        curency_store.createIndex('name', 'currencyName');
     });
 }
 
@@ -67,7 +67,7 @@ window.addEventListener('beforeinstallprompt', e => {
     e.preventDefault();
     //TODO: use the def prompt when you have a prettified prompt to show(modal bottomsheet?)
     // Stash event for future trigger (on btn click)
-    deffered_prompt = e;
+    //deffered_prompt = e;
     //feedback = window.confirm('Click to install a shortcut to the website on your homescreen');
 });
 
@@ -76,11 +76,8 @@ function fetch_currencies(){
         if (response.ok) {
             return response.json()
         }
-    }).then(res_json => {
-        console.log(res_json);
-        const currency_objs = res_json;
-        
-        let currencies = currency_objs['results'];
+    }).then(currencies => {
+        console.log(currencies);
 
         db_promise.then(db => {
             if(!db) return;
