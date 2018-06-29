@@ -10,12 +10,12 @@ function openDatabase(){
     return idb.open('procurrency', 1, upgradeDb => {
         const curency_store = upgradeDb.createObjectStore(currency_store_name, {
             // TODO: Make a primary key here
-            keypath: 'id'
+            keypath: 'currencyName'
         });
         const conversion_store = upgradeDb.createObjectStore(conversion_store_name, {
         })
         //TODO: Create indexes here
-        curency_store.createIndex('name', 'currencyName');
+        //curency_store.createIndex('name', 'currencyName');
     });
 }
 
