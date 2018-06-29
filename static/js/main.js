@@ -21,7 +21,7 @@ function openDatabase(){
 function register_serviceWorker(){
     if(!navigator.serviceWorker) return;
     
-    navigator.serviceWorker.register('./sw.js').then(reg => {
+    navigator.serviceWorker.register('./static/js/sw.js').then(reg => {
         // not called from service worker. exit early
         if(!navigator.serviceWorker.controller) return;
 
