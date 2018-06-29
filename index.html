@@ -4,8 +4,9 @@
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title>Procurrency. The currency converter</title>
+        <link rel="manifest" href="/manifest.json" />
         <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
-        <meta name="theme-color" content="#001122" />
+        <meta name="theme-color" content="#3367D6" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <link rel="icon" sizes="192x192" href="icon.png"/>
         <link rel="apple-touch-icon" sizes="192x192" href="ios-icon.png"/>
@@ -20,7 +21,7 @@
             <input type="number" name="from_ammount" id="from_ammount" placeholder="Source currency ammount" autofocus autocomplete="off" required/><br/>
             <label for="to_currency">Converted ammount:</label><br/>
             <select id="to_currency"></select><br/>
-            <input type="text" disabled="disabled" name='to_ammount' id="to_ammount" placeholder="Waiting for conversion" />
+            <input type="number" disabled="disabled" name='to_ammount' id="to_ammount" placeholder="Waiting for conversion" />
         </form>
     </body>
 </html>

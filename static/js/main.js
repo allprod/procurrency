@@ -9,11 +9,12 @@ function openDatabase(){
     return idb.open('procurrency', 1, upgradeDb => {
         const curency_store = upgradeDb.createObjectStore(currency_store_name, {
             // TODO: Make a primary key here
-            keypath: 'currencyName'
+            keypath: 'id'
         });
         const conversion_store = upgradeDb.createObjectStore(conversion_store_name, {
         })
         //TODO: Create indexes here
+        curency_store.createIndex('name', 'currencyName');
     });
 }
 
@@ -53,15 +54,47 @@ function track_installing(sworker){
     });
 }
 
+function update_ready(worker){
+    //TODO: Do something in here
+}
+
 const db_promise = openDatabase();
 register_serviceWorker();
+
+function fetch_currencies(){
+    fetch(currency_query).then(response => {
+        console.log(response.body);
+        const currency_objs = JSON.parse(Response.body);
+        
+        const currencies = currency_objs['results'];
+    })
+    db_promise.then(db => {
+        if(!db) return;
+
+        const trans = db.transaction(currency_store_name, 'readwrite');
+        const store = trans.objectStore(currency_store_name);
+        
+        currencies.forEach(element => store.put(element));
+    });
+}
 
 function get_currencies(){
     db_promise.then(db => {
         if(!db){
-            //TODO: fetch and store in db
+            return;
         }
+        const index = db.transaction('procurrency').objectStore(currency_store_name).index('name');
+        //FIXME: Populate the select list here
+        index.getAll().then(currencies => {
+            const from_list = document.getElementById('from_currency');
+            const to_list = document.getElementById('to_currency');
 
+            for (const currency of currencies) {
+                const opt = document.createElement("option");
+                opt.textContent = `${currency.currencyName} (${currencySymbol})`
+            }
+        })
     });
     //currency_objs = 
 }
+get_currencies();
