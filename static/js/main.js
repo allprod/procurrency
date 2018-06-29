@@ -105,7 +105,6 @@ function fetch_currencies(){
             return response.json()
         }
     }).then(currency_objs => {
-        //console.log(currency_objs);
         
         let currencies  = currency_objs['results'];
 
@@ -118,8 +117,6 @@ function fetch_currencies(){
             entries = Object.entries(currencies);
             for(entry of entries){
                 money = make_money({currency_name : entry[1].currencyName, currency_symbol: entry[1].currencySymbol, id: entry[1].id});
-                //console.log(money);
-                //store.put(entry[1]);
                 store.put(money);
             }
             get_currencies();
@@ -133,7 +130,7 @@ function get_currencies(){
             return;
         }
         const index = db.transaction(currency_store_name).objectStore(currency_store_name).index('name');
-        //FIXME: Populate the select list here
+
         index.getAll().then(currencies => {
             const from_list = document.getElementById('from_currency');
             const to_list = document.getElementById('to_currency');
