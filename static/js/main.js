@@ -83,7 +83,7 @@ function get_currencies(){
         if(!db){
             return;
         }
-        const index = db.transaction('procurrency').objectStore(currency_store_name).index('name');
+        const index = db.transaction(currency_store_name).objectStore(currency_store_name).index('name');
         //FIXME: Populate the select list here
         index.getAll().then(currencies => {
             const from_list = document.getElementById('from_currency');
@@ -99,4 +99,5 @@ function get_currencies(){
     });
     //currency_objs = 
 }
+fetch_currencies();
 get_currencies();
