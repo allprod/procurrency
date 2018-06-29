@@ -9,16 +9,18 @@
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <link rel="icon" sizes="192x192" href="icon.png"/>
         <link rel="apple-touch-icon" sizes="192x192" href="ios-icon.png"/>
-        <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
-        <script src="./js/main.js"></script>
+        <link rel="stylesheet" type="text/css" media="screen" href="./static/css/main.css" />
+        <script src="./static/js/idb.js"></script>
+        <script src="./static/js/main.js"></script>
     </head>
     <body onload="window.scrollTo(0, 1);">
         <form>
             <label for="from_currency">Source ammount:</label><br/>
-            <select id="from_currency"></select>
-            <input type="number" name="from_ammount" pattern="[0-9]+" id="from_ammount" placeholder="Source currency ammount" autofocus autocomplete="off" required/><br/>
+            <select id="from_currency"></select><br/>
+            <input type="number" name="from_ammount" id="from_ammount" placeholder="Source currency ammount" autofocus autocomplete="off" required/><br/>
             <label for="to_currency">Converted ammount:</label><br/>
-            <select id="to_currency"></select>
+            <select id="to_currency"></select><br/>
+            <input type="text" disabled="disabled" name='to_ammount' id="to_ammount" placeholder="Waiting for conversion" />
         </form>
     </body>
 </html>
