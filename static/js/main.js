@@ -88,7 +88,7 @@ function fetch_currencies(){
             const trans = db.transaction(currency_store_name, 'readwrite');
             const store = trans.objectStore(currency_store_name);
             
-            entries = currencies.entries();
+            entries = Object.entries(currencies);
             for(entry of entries){
                 console.log(entry[1]);
                 store.put(entry[1]);
