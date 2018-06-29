@@ -48,7 +48,7 @@ function open_database(){
 function register_serviceWorker(){
     if(!navigator.serviceWorker) return;
     
-    navigator.serviceWorker.register('./static/js/sw.js').then(reg => {
+    navigator.serviceWorker.register('../../sw.js').then(reg => {
         // site not called from service worker. exit early
         if(!navigator.serviceWorker.controller) return;
 
@@ -88,14 +88,16 @@ function update_ready(worker){
 const db_promise = open_database();
 register_serviceWorker();
 
+/*
 window.addEventListener('beforeinstallprompt', e => {
     //Chrome <= 67 hack
-    e.preventDefault();
+    //e.preventDefault();
     //TODO: use the def prompt when you have a prettified prompt to show(modal bottomsheet?)
     // Stash event for future trigger (on btn click)
     //deffered_prompt = e;
     //feedback = window.confirm('Click to install a shortcut to the website on your homescreen');
 });
+*/
 
 function fetch_currencies(){
     fetch(currency_query).then(response => {
@@ -120,6 +122,7 @@ function fetch_currencies(){
                 //store.put(entry[1]);
                 store.put(money);
             }
+            get_currencies();
         });
     }).catch( error => console.log('There has been a problem with your currency fetch operation: ', error.message));
 }
@@ -154,4 +157,7 @@ function get_currencies(){
 
 
 fetch_currencies();
-get_currencies();
+
+con_btn = document.getElementById('convert_btn');
+
+con_btn.addEventListener('click', )
