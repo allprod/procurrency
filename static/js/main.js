@@ -1,8 +1,17 @@
 const currency_store_name = 'currencies';
 const conversion_store_name = 'conversions';
-const currency_query = 'https://free.currencyconverterapi.com/api/v5/currencies'
-let convertion_query = 'https://free.currencyconverterapi.com/api/v5/convert?q=USD_PHP&compact=ultra'
+const currency_query = 'https://free.currencyconverterapi.com/api/v5/currencies';
+let convertion_query = 'https://free.currencyconverterapi.com/api/v5/convert?q=USD_PHP&compact=ultra';
 //let deffered_prompt;
+
+function make_money({currency_name = 'fake money', currency_symbol = 'replace me', id = 'fakeness'} = {}){
+    // money error. exit
+    if(currency_name === 'fake money') return undefined;
+    if (currency_symbol === 'replace me') {
+        currency_symbol = id;
+    }
+    return {currencyName: currency_name, currencySymbol: currency_symbol, id: id};
+}
 
 function openDatabase(){
     if(!navigator.serviceWorker) return Promise.resolve();
@@ -10,7 +19,7 @@ function openDatabase(){
     return idb.open('procurrency', 1, upgradeDb => {
         const curency_store = upgradeDb.createObjectStore(currency_store_name, {
             // TODO: Make a primary key here
-            keypath: 'id'
+            //keypath: 'id'
         });
         const conversion_store = upgradeDb.createObjectStore(conversion_store_name, {
         })
@@ -76,8 +85,10 @@ function fetch_currencies(){
         if (response.ok) {
             return response.json()
         }
-    }).then(currencies => {
-        console.log(currencies);
+    }).then(currency_objs => {
+        //console.log(currency_objs);
+        
+        let currencies  = currency_objs['results'];
 
         db_promise.then(db => {
             if(!db) return;
@@ -87,8 +98,9 @@ function fetch_currencies(){
             
             entries = Object.entries(currencies);
             for(entry of entries){
-                console.log(entry[1]);
-                store.put(entry[1]);
+                //console.log(entry[1]);
+                //store.put(entry[1]);
+                store.put(make_money(entry[1].currencyName, entry[1].currencySymbol, entry[1].id));
             }
         });
     }).catch(function(error) {
