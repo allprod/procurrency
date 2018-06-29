@@ -2,6 +2,7 @@ const currency_store_name = 'currencies';
 const conversion_store_name = 'conversions';
 const currency_query = 'https://free.currencyconverterapi.com/api/v5/currencies'
 let convertion_query = 'https://free.currencyconverterapi.com/api/v5/convert?q=USD_PHP&compact=ultra'
+let deffered_prompt;
 
 function openDatabase(){
     if(!navigator.serviceWorker) return Promise.resolve();
@@ -61,8 +62,16 @@ function update_ready(worker){
 const db_promise = openDatabase();
 register_serviceWorker();
 
+window.addEventListener('beforeinstallprompt', e => {
+    //Chrome <= 67 hack
+    e.preventDefault();
+    //TODO: use the def prompt when you have a prettified prompt to show(modal bottomsheet?)
+    // Stash event for future trigger (on btn click)
+    deffered_prompt = e;
+    //feedback = window.confirm('Click to install a shortcut to the website on your homescreen');
+});
+
 function fetch_currencies(){
-    let currencies;
     fetch(currency_query).then(response => {
         if (response.ok) {
             return response.json()
@@ -71,23 +80,23 @@ function fetch_currencies(){
         console.log(res_json);
         const currency_objs = res_json;
         
-        currencies = currency_objs['results'];
+        let currencies = currency_objs['results'];
+
+        db_promise.then(db => {
+            if(!db) return;
+    
+            const trans = db.transaction(currency_store_name, 'readwrite');
+            const store = trans.objectStore(currency_store_name);
+            
+            entries = currencies.entries();
+            for(entry of entries){
+                console.log(entry[1]);
+                store.put(entry[1]);
+            }
+        });
     }).catch(function(error) {
         console.log('There has been a problem with your fetch operation: ', error.message);
       });
-
-    db_promise.then(db => {
-        if(!db) return;
-
-        const trans = db.transaction(currency_store_name, 'readwrite');
-        const store = trans.objectStore(currency_store_name);
-        
-        entries = currencies.entries();
-        for(entry of entries){
-            console.log(entry[1]);
-            store.put(entry[1]);
-        }
-    });
 }
 
 function get_currencies(){
