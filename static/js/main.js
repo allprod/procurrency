@@ -63,12 +63,18 @@ register_serviceWorker();
 
 function fetch_currencies(){
     let currencies;
-    fetch(currency_query).then(response => response.json()).then(res_json => {
+    fetch(currency_query).then(response => {
+        if (response.ok) {
+            return response.json()
+        }
+    }).then(res_json => {
         console.log(res_json);
         const currency_objs = res_json;
         
         currencies = currency_objs['results'];
-    });
+    }).catch(function(error) {
+        console.log('There has been a problem with your fetch operation: ', error.message);
+      });
 
     db_promise.then(db => {
         if(!db) return;
@@ -76,7 +82,11 @@ function fetch_currencies(){
         const trans = db.transaction(currency_store_name, 'readwrite');
         const store = trans.objectStore(currency_store_name);
         
-        currencies.forEach(element => store.put(element));
+        entries = currencies.entries();
+        for(entry of entries){
+            console.log(entry[1]);
+            store.put(entry[1]);
+        }
     });
 }
 
