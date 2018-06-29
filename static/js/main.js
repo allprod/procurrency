@@ -65,7 +65,7 @@ function fetch_currencies(){
     let currencies;
     fetch(currency_query).then(response => response.json()).then(res_json => {
         console.log(res_json);
-        const currency_objs = JSON.parse(res_json);
+        const currency_objs = res_json;
         
         currencies = currency_objs['results'];
     });
