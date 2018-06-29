@@ -19,7 +19,7 @@ function openDatabase(){
     return idb.open('procurrency', 1, upgradeDb => {
         const curency_store = upgradeDb.createObjectStore(currency_store_name, {
             // TODO: Make a primary key here
-            //keypath: 'id'
+            keypath: 'id'
         });
         const conversion_store = upgradeDb.createObjectStore(conversion_store_name, {
         })
