@@ -33,6 +33,10 @@ function convert(){
     return false;
 }
 
+function display_currencies(currencies = {}){
+    //TODO: Make this do something.. move logic here.
+}
+
 function open_database(){
     if(!navigator.serviceWorker) return Promise.resolve();
 
