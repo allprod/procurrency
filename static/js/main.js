@@ -27,7 +27,7 @@ function convert(){
         const ammount = rate * source_ammount;
         console.log(rate);
         
-        to_amt.value = ammount.toFixed(2);
+        to_amt.value = ammount.toFixed(3);
     }).catch( error => console.log('There has been a problem with the convertion rate fetch operation: ', error.message));
     //form hack
     return false;
@@ -50,7 +50,7 @@ function open_database(){
 function register_serviceWorker(){
     if(!navigator.serviceWorker) return;
     
-    navigator.serviceWorker.register('../../sw.js').then(reg => {
+    navigator.serviceWorker.register('./sw.js').then(reg => {
         // site not called from service worker. exit early
         if(!navigator.serviceWorker.controller) return;
 
@@ -122,7 +122,7 @@ function fetch_currencies(){
                 store.put(money);
             }
             get_currencies();
-        });
+        }, error => console.log('Error querying idb: ', error.message));
     }).catch( error => console.log('There has been a problem with your currency fetch operation: ', error.message));
 }
 
