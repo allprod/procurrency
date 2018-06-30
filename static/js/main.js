@@ -114,18 +114,23 @@ function fetch_currencies(){
         
         let currencies  = currency_objs['results'];
 
+        console.log('fetch works');
         db_promise.then(db => {
             if(!db) return;
     
+            console.log('getting trans');
             const trans = db.transaction(currency_store_name, 'readwrite');
+            console.log('getting store');
             const store = trans.objectStore(currency_store_name);
             
             entries = Object.entries(currencies);
             for(entry of entries){
                 money = make_money({currency_name : entry[1].currencyName, currency_symbol: entry[1].currencySymbol, id: entry[1].id});
+                console.log('putting vars');
                 store.put(money);
+                console.log('put seems to work');
             }
-            get_currencies();
+            //get_currencies();
         }, error => console.log('Error querying idb: ', error.message));
     }).catch( error => console.log('There has been a problem with your currency fetch operation: ', error.message));
 }
