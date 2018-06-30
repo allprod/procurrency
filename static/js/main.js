@@ -21,14 +21,16 @@ function convert(){
 
     const query = `${from_currency}_${to_currency}`;
     const convertion_query = `https://free.currencyconverterapi.com/api/v5/convert?q=${query}&compact=ultra`;
-    fetch(convertion_query).then(response => {if(response.ok)  response.json()}).then(conversion => {
-        const rate = conversion[query].value;
+    fetch(convertion_query).then(response => {if(response.ok) return response.json()}).then(conversion => {
+        const rate = conversion[query];
         const source_ammount = parseInt(from_amt.value, 10);
         const ammount = rate * source_ammount;
-        conversion.log(rate);
+        console.log(rate);
         
         to_amt.value = ammount.toFixed(2);
     }).catch( error => console.log('There has been a problem with the convertion rate fetch operation: ', error.message));
+    //form hack
+    return false;
 }
 
 function open_database(){
