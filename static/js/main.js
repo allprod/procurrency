@@ -160,7 +160,3 @@ function get_currencies(){
 
 
 fetch_currencies();
-
-con_btn = document.getElementById('convert_btn');
-
-con_btn.addEventListener('click', )

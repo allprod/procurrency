@@ -13,7 +13,7 @@ const cache_urls = [
 
 self.addEventListener('install', event => {
     console.log('[service worker]: installing sw');
-    event.waitUntil(caches.open(static_cache_name).then(cache => cache.addAll(cache_urls)));
+    event.waitUntil(caches.open(static_cache_name).then(cache => cache.addAll(cache_urls), error => console.log('[SW]install: cache error: ',error.message)));
 });
 
 
