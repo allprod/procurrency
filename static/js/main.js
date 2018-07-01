@@ -34,7 +34,7 @@ function display_currencies(currencies_objs){
 
             if(currency.id === 'USD') opt.setAttribute('selected', '');
 
-            if(currency.id === 'ZMW') opt.setAttribute('selected', '');
+            if(currency.id === 'ZMW') opt2.setAttribute('selected', '');
 
             from_list.appendChild(opt);
             to_list.appendChild(opt2);
@@ -166,7 +166,7 @@ function display_conversions(rate = 0){
     from_amt = document.getElementById('from_ammount');
     to_amt = document.getElementById('to_ammount');
 
-    const source_ammount = parseInt(from_amt.value, 10);
+    const source_ammount = parseFloat(from_amt.value, 10);
     const ammount = rate * source_ammount;
 
     to_amt.value = ammount.toFixed(3);
@@ -216,13 +216,10 @@ function get_conversion(from_currency = '', to_currency = ''){
 function convert(){
     from_currency = document.getElementById('from_currency').value;
     to_currency = document.getElementById('to_currency').value;
+    
 
     get_conversion(from_currency, to_currency);
 
     //form hack
     return false;
 }
-
-
-//get from currency list from db
-get_currencies();

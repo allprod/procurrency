@@ -22,21 +22,25 @@
     </head>
     <header class="header">
         <h1 class="header_title">Procurrency Mobile Currency converter</h1>
-        <p>Mobile currency convertion progressive web app</p>
+        <p class="header_subtitle">Mobile currency convertion progressive web app</p>
     </header>
     <body onload="window.scrollTo(0, 1);">
         <form id="input_form" onsubmit="return convert()">
-            <label for="from_currency">Source ammount:</label><br/>
-            <select id="from_currency" form="input_form" /><br/>
-            <input type="number" name="from_ammount" id="from_ammount" placeholder="Source currency ammount" autofocus autocomplete="off" form="input_form" required/><br/>
-            <label for="to_currency">Converted ammount:</label><br/>
-            <select id="to_currency" form="input_form" /><br/>
-            <input type="number" disabled="disabled" name='to_ammount' id="to_ammount" placeholder="Enter details and press convert" form="input_form" />
+            <label for="from_currency">Source ammount:</label>
+            <select id="from_currency" form="input_form" onchange="convert();" />
+            <input type="number" name="from_ammount" id="from_ammount" placeholder="Source currency ammount" autofocus autocomplete="off" form="input_form" oninput="convert();" />
+            <label for="to_currency">Converted ammount:</label>
+            <select id="to_currency" form="input_form" onchange="convert();" />
+            <input type="number" disabled="disabled" name='to_ammount' id="to_ammount" placeholder="Enter details and press convert" form="input_form" oninput="convert();" />
             <button class="btn" onclick="convert();" form="input_form" id="convert_btn">convert</button>
         </form>
 
         <footer>
-            <div>Favicon and app icon Made by <a href="https://www.flaticon.com/authors/eucalyp" title="Eucalyp">Eucalyp</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
+            <caption><div>Favicon and app icon Made by <a href="https://www.flaticon.com/authors/eucalyp" title="Eucalyp">Eucalyp</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div></caption>
         </footer>
+        <script>
+            //get from currency list from db or net
+            get_currencies();
+        </script>
     </body>
 </html>
