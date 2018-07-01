@@ -29,6 +29,7 @@ const img_urls = [
     './images/icons/icon-192.png',
     './images/icons/icon-384.png',
     './images/icons/icon-512.png',
+    './favicon.ico'
 ];
 
 self.addEventListener('install', event => {
