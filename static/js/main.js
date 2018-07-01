@@ -27,12 +27,14 @@ function display_currencies(currencies_objs){
 
             const opt = document.createElement("option");
             const opt2 = document.createElement("option");
-            opt.textContent = `${currency.currencyName} (${currency.currencySymbol})`;
+            opt.textContent = `${currency.id} - ${currency.currencyName} (${currency.currencySymbol})`;
             opt.setAttribute('value', currency.id);
-            opt2.textContent = `${currency.currencyName} (${currency.currencySymbol})`;
+            opt2.textContent = `${currency.id} - ${currency.currencyName} (${currency.currencySymbol})`;
             opt2.setAttribute('value', currency.id);
 
             if(currency.id === 'USD') opt.setAttribute('selected', '');
+
+            if(currency.id === 'ZMW') opt.setAttribute('selected', '');
 
             from_list.appendChild(opt);
             to_list.appendChild(opt2);
@@ -87,7 +89,9 @@ function track_installing(sworker){
 }
 
 function update_ready(worker){
-    //TODO: Do something in here
+    //TODO: alert user
+    //FIXME: wrap this in an if for response
+    worker.postMessage({uresponse: 'skipwaiting'});
 }
 
 const db_promise = open_database();
@@ -169,11 +173,12 @@ function display_conversions(rate = 0){
 }
 
 // fetch a rate and cache it
-function fetch_conversion(query = ''){
+function fetch_conversion(from_currency = '', to_currency = ''){
+    const query = `${from_currency}_${to_currency}`;
+    const query2 = `${to_currency}_${from_currency}`;
     let res = 0;
-    const query_url = `https://free.currencyconverterapi.com/api/v5/convert?q=${query}&compact=ultra`;
+    const query_url = `https://free.currencyconverterapi.com/api/v5/convert?q=${query},${query2}&compact=ultra`;
     fetch(query_url).then(response => {if(response.ok) return response.json()}).then(conversion => {
-        console.log(conversion);
         res = conversion[query];
         // show the user
         display_conversions(res);
@@ -181,21 +186,26 @@ function fetch_conversion(query = ''){
             const store = db.transaction(conversion_store_name, 'readwrite').objectStore(conversion_store_name);
             // Store the conversion rate for the currency pair
             store.put(res, query);
+            // Store the converse rate for fetch efficiency (save on calls to API)
+            // This gives us a best case 2X on limit to calls
+            store.put(conversion[query2], query2);
         }).catch(error => console.log('fetch_conv: caching error: ', error.message));
     }).catch(error => console.log('fetch_conv: fetch error: ', error.message));
 }
 
-function get_conversion(query =''){
+function get_conversion(from_currency = '', to_currency = ''){
+    const query = `${from_currency}_${to_currency}`;
+
     db_promise.then(db => {
         if(!db){
-            fetch_conversion(query);
+            fetch_conversion(from_currency, to_currency);
             return;
         } 
         const store = db.transaction(conversion_store_name).objectStore(conversion_store_name);
         
         store.get(query).then(rate => {
             if(rate == undefined || rate == null) {
-                fetch_conversion(query);
+                fetch_conversion(from_currency, to_currency);
                 return;
             }
             display_conversions(rate);
@@ -207,9 +217,7 @@ function convert(){
     from_currency = document.getElementById('from_currency').value;
     to_currency = document.getElementById('to_currency').value;
 
-    const query = `${from_currency}_${to_currency}`;
-    
-    get_conversion(query);
+    get_conversion(from_currency, to_currency);
 
     //form hack
     return false;
