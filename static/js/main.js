@@ -163,15 +163,16 @@ function get_currencies(){
 function fetch_conversion(query = ''){
     const res = 0;
     const query_url = `https://free.currencyconverterapi.com/api/v5/convert?q=${query}&compact=ultra`;
-    return fetch(query_url).then(response => {if(response.ok) return response.json()}).then(conversion => {
+    await fetch(query_url).then(response => {if(response.ok) return response.json()}).then(conversion => {
         res = conversion[query];
         db_promise.then(db => {
             const store = db.transaction(conversion_store_name).objectStore(conversion_store_name);
             // Store the conversion rate for the currency pair
             store.put(res, query)
-            return res;
         }).catch(error => console.log('fetch_conv: caching error: ', error.message));
     }).catch(error => console.log('fetch_conv: fetch error: ', error.message));
+
+    return res;
 }
 
 function get_conversion(query =''){
