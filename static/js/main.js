@@ -148,8 +148,6 @@ function get_currencies(){
                 fetch_currencies();
                 return;
             }
-            console.log('from db: ');
-            console.log(currencies_objs)
             display_currencies(currencies_objs);
         })
     }, error => {
@@ -166,21 +164,21 @@ function display_conversions(rate = 0){
 
     const source_ammount = parseInt(from_amt.value, 10);
     const ammount = rate * source_ammount;
-        
+
     to_amt.value = ammount.toFixed(3);
-    
 }
 
 // fetch a rate and cache it
 function fetch_conversion(query = ''){
-    const res = 0;
+    let res = 0;
     const query_url = `https://free.currencyconverterapi.com/api/v5/convert?q=${query}&compact=ultra`;
     fetch(query_url).then(response => {if(response.ok) return response.json()}).then(conversion => {
+        console.log(conversion);
         res = conversion[query];
+        // show the user
+        display_conversions(res);
         db_promise.then(db => {
-            const store = db.transaction(conversion_store_name).objectStore(conversion_store_name);
-            // show the user
-            display_conversions(res);
+            const store = db.transaction(conversion_store_name, 'readwrite').objectStore(conversion_store_name);
             // Store the conversion rate for the currency pair
             store.put(res, query);
         }).catch(error => console.log('fetch_conv: caching error: ', error.message));
@@ -195,9 +193,13 @@ function get_conversion(query =''){
         } 
         const store = db.transaction(conversion_store_name).objectStore(conversion_store_name);
         
-        const rate = store.get(query);
-        if(rate == undefined || rate == null) fetch_conversion(query);
-        display_conversions(rate);
+        store.get(query).then(rate => {
+            if(rate == undefined || rate == null) {
+                fetch_conversion(query);
+                return;
+            }
+            display_conversions(rate);
+        });
     });
 }
 
