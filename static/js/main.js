@@ -13,28 +13,30 @@ function make_money({currency_name = 'fake money', currency_symbol = 'replace me
     return {currencyName: currency_name, currencySymbol: currency_symbol, id: id};
 }
 
-function convert(){
-    from_amt = document.getElementById('from_ammount');
-    to_amt = document.getElementById('to_ammount');
-    from_currency = document.getElementById('from_currency').value;
-    to_currency = document.getElementById('to_currency').value;
-
-    const query = `${from_currency}_${to_currency}`;
-    const convertion_query = `https://free.currencyconverterapi.com/api/v5/convert?q=${query}&compact=ultra`;
-    fetch(convertion_query).then(response => {if(response.ok) return response.json()}).then(conversion => {
-        const rate = conversion[query];
-        const source_ammount = parseInt(from_amt.value, 10);
-        const ammount = rate * source_ammount;
-        console.log(rate);
-        
-        to_amt.value = ammount.toFixed(3);
-    }).catch( error => console.log('There has been a problem with the convertion rate fetch operation: ', error.message));
-    //form hack
-    return false;
-}
-
-function display_currencies(currencies = {}){
+function display_currencies(currencies_objs){
     //TODO: Make this do something.. move logic here..
+
+    const currencies = currencies_objs['results'];
+
+    entries = Object.entries(currencies);
+        for(entry of entries){
+            currency = make_money({currency_name : entry[1].currencyName, currency_symbol: entry[1].currencySymbol, id: entry[1].id});
+            
+            const from_list = document.getElementById('from_currency');
+            const to_list = document.getElementById('to_currency');
+
+            const opt = document.createElement("option");
+            const opt2 = document.createElement("option");
+            opt.textContent = `${currency.currencyName} (${currency.currencySymbol})`;
+            opt.setAttribute('value', currency.id);
+            opt2.textContent = `${currency.currencyName} (${currency.currencySymbol})`;
+            opt2.setAttribute('value', currency.id);
+
+            if(currency.id === 'USD') opt.setAttribute('selected', '');
+
+            from_list.appendChild(opt);
+            to_list.appendChild(opt2);
+        }
 }
 
 function open_database(){
@@ -42,12 +44,9 @@ function open_database(){
 
     return idb.open('procurrency', 1, upgradeDb => {
         const curency_store = upgradeDb.createObjectStore(currency_store_name, {
-            keyPath: 'id'
           });
         const conversion_store = upgradeDb.createObjectStore(conversion_store_name, {
         })
-        //TODO: Create indexes here
-        curency_store.createIndex('name', 'currencyName');
     });
 }
 
@@ -105,63 +104,103 @@ window.addEventListener('beforeinstallprompt', e => {
 });
 */
 
+//cache for future use and display immediately.
 function fetch_currencies(){
     fetch(currency_query).then(response => {
         if (response.ok) {
             return response.json()
         }
     }).then(currency_objs => {
-        
-        let currencies  = currency_objs['results'];
+        // cache for future use
+        cache_currencies(currency_objs);
+        //display to the user for their current enjoyment
+        display_currencies(currency_objs);
+    })
+        .catch( error => console.log('There has been a problem with your currency fetch operation: ', error.message));
+}
+function cache_currencies(currency_objs){
+    db_promise.then(db => {
+        if(!db) return;
 
-        console.log('fetch works');
-        db_promise.then(db => {
-            if(!db) return;
-    
-            console.log('getting trans');
-            const trans = db.transaction(currency_store_name, 'readwrite');
-            console.log('getting store');
-            const store = trans.objectStore(currency_store_name);
-            
-            entries = Object.entries(currencies);
-            for(entry of entries){
-                money = make_money({currency_name : entry[1].currencyName, currency_symbol: entry[1].currencySymbol, id: entry[1].id});
-                console.log('putting vars');
-                store.put(money);
-                console.log('put seems to work');
-            }
-            //get_currencies();
-        }, error => console.log('Error querying idb: ', error.message));
-    }).catch( error => console.log('There has been a problem with your currency fetch operation: ', error.message));
+        console.log('getting trans');
+        const trans = db.transaction(currency_store_name, 'readwrite');
+        console.log('getting store');
+        const store = trans.objectStore(currency_store_name);
+        
+        store.put(currency_objs, 'currencies');
+        //get_currencies();
+    }, error => console.log('Error querying idb: ', error.message))
+        .catch( error => console.log('idb currency fetch error: ', error.message));
 }
 
 function get_currencies(){
     db_promise.then(db => {
+        //First time loading, there is no db so we fetch currencies from api(then cache and display.)
         if(!db){
+            fetch_currencies();
             return;
         }
-        const index = db.transaction(currency_store_name).objectStore(currency_store_name).index('name');
+        const store = db.transaction(currency_store_name).objectStore(currency_store_name);
 
-        index.getAll().then(currencies => {
-            const from_list = document.getElementById('from_currency');
-            const to_list = document.getElementById('to_currency');
-
-            for (const currency of currencies) {
-                const opt = document.createElement("option");
-                const opt2 = document.createElement("option");
-                opt.textContent = `${currency.currencyName} (${currency.currencySymbol})`;
-                opt.setAttribute('value', currency.id);
-                opt2.textContent = `${currency.currencyName} (${currency.currencySymbol})`;
-                opt2.setAttribute('value', currency.id);
-
-                if(currency.id === 'USD') opt.setAttribute('selected', '');
-
-                from_list.appendChild(opt);
-                to_list.appendChild(opt2);
+        store.get('currencies').then(currencies_objs => {
+            // if response is empty db store obj, call fetch_currencies()
+            if(currencies_objs == undefined || currencies_objs == null) {
+                fetch_currencies();
+                return;
             }
+            console.log('from db: ');
+            console.log(currencies_objs)
+            display_currencies(currencies_objs);
         })
+    }, error => {
+        console.log('currency get error :', error.message);
+        // Test further before uncommenting
+        //fetch_currencies();
     });
 }
 
+// fetch a rate and cache it
+function fetch_conversion(query = ''){
+    const res = 0;
+    const query_url = `https://free.currencyconverterapi.com/api/v5/convert?q=${query}&compact=ultra`;
+    return fetch(query_url).then(response => {if(response.ok) return response.json()}).then(conversion => {
+        res = conversion[query];
+        db_promise.then(db => {
+            const store = db.transaction(conversion_store_name).objectStore(conversion_store_name);
+            // Store the conversion rate for the currency pair
+            store.put(res, query)
+            return res;
+        }).catch(error => console.log('fetch_conv: caching error: ', error.message));
+    }).catch(error => console.log('fetch_conv: fetch error: ', error.message));
+}
 
-fetch_currencies();
+function get_conversion(query =''){
+    db_promise.then(db => {
+        if(!db) return fetch_conversion(query);
+        const store = db.transaction(conversion_store_name).objectStore(conversion_store_name);
+        
+        return store.get(query) || fetch_conversion(query);
+    });
+}
+
+function convert(){
+    from_amt = document.getElementById('from_ammount');
+    to_amt = document.getElementById('to_ammount');
+    from_currency = document.getElementById('from_currency').value;
+    to_currency = document.getElementById('to_currency').value;
+
+    const query = `${from_currency}_${to_currency}`;
+    
+    const rate = get_conversion(query);
+    const source_ammount = parseInt(from_amt.value, 10);
+    const ammount = rate * source_ammount;
+        
+    to_amt.value = ammount.toFixed(3);
+    
+    //form hack
+    return false;
+}
+
+
+//get from currency list from db
+get_currencies();
