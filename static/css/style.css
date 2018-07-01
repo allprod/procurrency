@@ -1,0 +1,119 @@
+@font-face{
+    font-family:'Roboto';
+    font-style:normal;
+    font-weight:400;
+    src:local("Roboto"),local("Roboto-Regular"),url("https://fonts.gstatic.com/s/roboto/v15/2UX7WLTfW3W8TclTUvlFyQ.woff") format("woff")
+}
+
+@font-face{
+    font-family:'Roboto';
+    font-style:normal;font-weight:700;
+    src:local("Roboto Bold"),
+    local("Roboto-Bold"),url("https://fonts.gstatic.com/s/roboto/v15/d-6IYplOFocCacKzxwXSOD8E0i7KZn-EPnyo3HZu7kw.woff") format("woff")
+}
+
+html {
+     overflow: hidden; 
+}
+
+
+html,body{
+    margin:0;
+    padding:0;
+    text-align: center;
+    height: 100%;
+    width: 100%;
+    font-display: optional;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-family:roboto, sans-serif;
+    -webkit-tap-highlight-color:rgba(0,0,0,0);
+    display: -webkit-flex;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    background-color: #cfd8dc;
+}
+
+card {
+    align-self: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+    background-color: whitesmoke;
+  }
+  
+  .card:hover {
+    box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+  }
+
+  .container {
+    display: -webkit-flex;
+    display: flex;
+    flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+      
+  }
+  header {
+    width: 100%;
+    height: 56px;
+    color: #FFF;
+    background: #3F51B5;
+    position: fixed;
+    font-size: 20px;
+    box-shadow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 2px 9px 1px rgba(0, 0, 0, 0.12), 0 4px 2px -2px rgba(0, 0, 0, 0.2);
+  }
+
+@media screen and (max-width: 570px) {
+
+    input[type=number]{
+        -moz-appearance: textfield;
+        background-color: rgba(45, 151, 177, 0.575);
+        width: 100%;
+        min-width: 40px;
+        min-height: 40px;
+        padding: 1.5em;
+        border-radius: 4px;
+    }
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button{
+        -webkit-appearance: textfield;
+        width: 0%;
+    }
+    select {
+        width: 100%;
+        min-width: 48px;
+        min-height: 48px;
+        padding: 1.5em;
+      }
+
+      .btn {
+        width: 100%;
+        background-color: #4285f4;
+        min-width: 48px;
+        min-height: 48px;
+        padding: 1.5em;
+      }
+      
+      .btn:hover {
+        background-color: #296CDB;
+        min-width: 48px;
+        min-height: 48px;
+        padding: 1.5em;
+      }
+      
+      .btn:focus {
+        background-color: #0F52C1;
+    
+        outline: 0;
+        min-width: 48px;
+        min-height: 48px;
+        padding: 1.5em;
+      }
+      
+      .btn:active {
+        background-color: #0039A8;
+        min-width: 48px;
+        min-height: 48px;
+        padding: 1.5em;
+      }
+}

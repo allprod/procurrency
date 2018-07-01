@@ -25,22 +25,47 @@
         <p class="header_subtitle">Mobile currency convertion progressive web app</p>
     </header>
     <body onload="window.scrollTo(0, 1);">
-        <form id="input_form" onsubmit="return convert()">
-            <label for="from_currency">Source ammount:</label>
-            <select id="from_currency" form="input_form" onchange="convert();" />
-            <input type="number" name="from_ammount" id="from_ammount" placeholder="Source currency ammount" autofocus autocomplete="off" form="input_form" oninput="convert();" />
-            <label for="to_currency">Converted ammount:</label>
-            <select id="to_currency" form="input_form" onchange="convert();" />
-            <input type="number" disabled="disabled" name='to_ammount' id="to_ammount" placeholder="Enter details and press convert" form="input_form" oninput="convert();" />
-            <button class="btn" onclick="convert();" form="input_form" id="convert_btn">convert</button>
-        </form>
+        <div class="card">
+                <form id="input_form" onsubmit="return convert()" class="container">
+                        <div class="box tos">
+                                <label for="from_currency">Source ammount:</label>
+                                <select id="from_currency" form="input_form" onchange="convert();" />
+                                <input aria-label="Ammount to convert" type="number" name="from_ammount" id="from_ammount" placeholder="Source currency ammount" autofocus autocomplete="off" form="input_form" oninput="convert();" />
+                        </div>
+                        <div class="box froms">
+                                <label for="to_currency">Converted ammount:</label>
+                                <select id="to_currency" form="input_form" onchange="convert();" />
+                                <input aria-label="Converted ammount" type="number" disabled="disabled" name='to_ammount' id="to_ammount" placeholder="Enter details and press convert" form="input_form" oninput="convert();" />
+                        </div>
+                        <div class="box c_btn">
+                                <button class="btn" onclick="convert();" form="input_form" id="convert_btn" hidden>convert</button>
+                        </div>
+                    </form>
+        </div>
 
         <footer>
-            <caption><div>Favicon and app icon Made by <a href="https://www.flaticon.com/authors/eucalyp" title="Eucalyp">Eucalyp</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div></caption>
+            <caption>
+                <div class="attribution">
+                    Favicon and app icon Made by <a href="https://www.flaticon.com/authors/eucalyp" title="Eucalyp">Eucalyp</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>
+                </div>
+            </caption>
         </footer>
         <script>
             //get from currency list from db or net
             get_currencies();
         </script>
+        
+        <div class="toast" hidden>
+                <p class="update_message" id="update_message" hidden>The app has been updated. Refresh to use it.</p>
+                <p class="install_message" id="install_message" hidden>Can we install the app to your homescreen?</p>
+                <div class="update_btns">
+                    <button class="update_refresh">Refresh</button>
+                    <button class="update_dismiss">Dismiss</button>
+                </div>
+                <div class="update_btns">
+                    <button class="install_yess">Yes</button>
+                    <button class="install_no">No</button>
+                </div>
+            </div>
     </body>
 </html>
