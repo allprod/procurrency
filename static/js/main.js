@@ -159,45 +159,56 @@ function get_currencies(){
     });
 }
 
-// fetch a rate and cache it
-function fetch_conversion(query = ''){
-    const res = 0;
-    const query_url = `https://free.currencyconverterapi.com/api/v5/convert?q=${query}&compact=ultra`;
-    await fetch(query_url).then(response => {if(response.ok) return response.json()}).then(conversion => {
-        res = conversion[query];
-        db_promise.then(db => {
-            const store = db.transaction(conversion_store_name).objectStore(conversion_store_name);
-            // Store the conversion rate for the currency pair
-            store.put(res, query)
-        }).catch(error => console.log('fetch_conv: caching error: ', error.message));
-    }).catch(error => console.log('fetch_conv: fetch error: ', error.message));
-
-    return res;
-}
-
-function get_conversion(query =''){
-    db_promise.then(db => {
-        if(!db) return fetch_conversion(query);
-        const store = db.transaction(conversion_store_name).objectStore(conversion_store_name);
-        
-        return store.get(query) || fetch_conversion(query);
-    });
-}
-
-function convert(){
+//update ui with converted currencies
+function display_conversions(rate = 0){
     from_amt = document.getElementById('from_ammount');
     to_amt = document.getElementById('to_ammount');
-    from_currency = document.getElementById('from_currency').value;
-    to_currency = document.getElementById('to_currency').value;
 
-    const query = `${from_currency}_${to_currency}`;
-    
-    const rate = get_conversion(query);
     const source_ammount = parseInt(from_amt.value, 10);
     const ammount = rate * source_ammount;
         
     to_amt.value = ammount.toFixed(3);
     
+}
+
+// fetch a rate and cache it
+function fetch_conversion(query = ''){
+    const res = 0;
+    const query_url = `https://free.currencyconverterapi.com/api/v5/convert?q=${query}&compact=ultra`;
+    fetch(query_url).then(response => {if(response.ok) return response.json()}).then(conversion => {
+        res = conversion[query];
+        db_promise.then(db => {
+            const store = db.transaction(conversion_store_name).objectStore(conversion_store_name);
+            // show the user
+            display_conversions(res);
+            // Store the conversion rate for the currency pair
+            store.put(res, query);
+        }).catch(error => console.log('fetch_conv: caching error: ', error.message));
+    }).catch(error => console.log('fetch_conv: fetch error: ', error.message));
+}
+
+function get_conversion(query =''){
+    db_promise.then(db => {
+        if(!db){
+            fetch_conversion(query);
+            return;
+        } 
+        const store = db.transaction(conversion_store_name).objectStore(conversion_store_name);
+        
+        const rate = store.get(query);
+        if(rate == undefined || rate == null) fetch_conversion(query);
+        display_conversions(rate);
+    });
+}
+
+function convert(){
+    from_currency = document.getElementById('from_currency').value;
+    to_currency = document.getElementById('to_currency').value;
+
+    const query = `${from_currency}_${to_currency}`;
+    
+    get_conversion(query);
+
     //form hack
     return false;
 }
