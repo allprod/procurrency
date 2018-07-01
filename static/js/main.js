@@ -159,6 +159,8 @@ function get_currencies(){
         // Test further before uncommenting
         //fetch_currencies();
     });
+    //TODO: remove update currency list hack when you can do this on interval
+    fetch_currencies();
 }
 
 //update ui with converted currencies
@@ -211,6 +213,9 @@ function get_conversion(from_currency = '', to_currency = ''){
             display_conversions(rate);
         });
     });
+    //TODO: replace this hach with actual cleanup and update code.
+    //Hack to update content for now while it doesnt do so on interval
+    fetch_conversion(from_currency, to_currency);
 }
 
 function convert(){
