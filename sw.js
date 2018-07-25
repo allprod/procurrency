@@ -8,34 +8,22 @@ const cache_urls = [
     './static/js/idb.js',
     './static/js/main.js',
     './static/css/main.css',
-    './images/icons/icon-72.png',
-    './images/icons/icon-96.png',
-    './images/icons/icon-128.png',
-    './images/icons/icon-144.png',
-    './images/icons/icon-152.png',
-    './images/icons/icon-192.png',
-    './images/icons/icon-384.png',
-    './images/icons/icon-512.png',
     'https://fonts.gstatic.com/s/roboto/v15/2UX7WLTfW3W8TclTUvlFyQ.woff',
     'https://fonts.gstatic.com/s/roboto/v15/d-6IYplOFocCacKzxwXSOD8E0i7KZn-EPnyo3HZu7kw.woff'
 ];
 
 const img_urls = [
-    './images/icons/icon-72.png',
-    './images/icons/icon-96.png',
-    './images/icons/icon-128.png',
-    './images/icons/icon-144.png',
-    './images/icons/icon-152.png',
-    './images/icons/icon-192.png',
-    './images/icons/icon-384.png',
-    './images/icons/icon-512.png',
     './favicon.ico'
 ];
 
 self.addEventListener('install', event => {
     console.log('[service worker]: installing sw');
     event.waitUntil(caches.open(static_cache_name).then(cache => cache.addAll(cache_urls), error => console.log('[SW]install: cache error: ',error.message))
-        .catch(error => console.log('[SW: install]: ', error.message)));
+        .catch(error => {
+            console.log('[SW: install]: ', error.message)
+            //TODO: Cache enough to not throw on chrome mobi but also look okay
+        })
+    );
 });
 
 
@@ -48,6 +36,7 @@ self.addEventListener('activate', event => {
             )
         )
     );
+    //Claim this domain as the client of this SW, making immediate activation on new installs
     self.clients.claim();
 });
 
