@@ -3,7 +3,10 @@
     <head>
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>Procurrency currency converter</title>
+        <title>Procurrency: free currency convertion app</title>
+        <meta name="Description" content="Developed by Paul M. Siame, Designed by Paul M. Siame,
+         Procurrency is a free currency convertion web app. It updates its exchange rates every 
+         hour and can convert recently converted currencies offline." />
         <link rel="manifest" href="./manifest.json" />
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -13,7 +16,7 @@
         <meta name="theme-color" content="#3367D6" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <link rel="icon" sizes="192x192" href="./images/icons/icon-192.png"/>
-        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
         <link rel="icon" href="/favicon.ico" type="image/x-icon">
         <link rel="apple-touch-icon" sizes="192x192" href="./images/icons/icon-192.png"/>
         <link rel="stylesheet" type="text/css" media="screen" href="./static/css/main.css" />
@@ -33,7 +36,7 @@
             <input aria-label="Ammount to convert" type="number" name="from_ammount" id="from_ammount" placeholder="Source currency ammount" autofocus autocomplete="off" form="input_form" oninput="convert();" />
             <label for="to_currency">Converted ammount:</label>
             <select id="to_currency" form="input_form" onchange="convert();" />
-            <input aria-label="Converted ammount" contenteditable="false" type="number" name='to_ammount' id="to_ammount" placeholder="Enter details and press convert" form="input_form" oninput="convert();" />
+            <input aria-label="Converted ammount" type="number" name='to_ammount' id="to_ammount" placeholder="Enter details and press convert" form="input_form" oninput="convert(1);" />
             <button class="btn" onclick="convert();" form="input_form" id="convert_btn" hidden>convert</button>
         </form>
 
