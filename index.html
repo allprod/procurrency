@@ -19,9 +19,7 @@
         <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
         <link rel="icon" href="/favicon.ico" type="image/x-icon">
         <link rel="apple-touch-icon" sizes="192x192" href="./images/icons/icon-192.png"/>
-        <link rel="stylesheet" type="text/css" media="screen" href="./static/css/main.css" />
         <script src="./static/js/idb.js"></script>
-        <script src="./static/js/main.js"></script>
         <meta name="msapplication-TileImage" content="./images/icons/icon-144.png" />
         <meta name="msapplication-TileColor" content="#26c6da" />
     </head>
@@ -31,25 +29,42 @@
     </header>
     <body onload="window.scrollTo(0, 1);">
         <form id="input_form" onsubmit="return convert()" class="container">
-            <label for="from_currency">Source ammount:</label>
-            <select id="from_currency" form="input_form" onchange="convert();" />
-            <input aria-label="Ammount to convert" type="number" name="from_ammount" id="from_ammount" placeholder="Source currency ammount" autofocus autocomplete="off" form="input_form" oninput="convert();" />
-            <label for="to_currency">Converted ammount:</label>
-            <select id="to_currency" form="input_form" onchange="convert();" />
-            <input aria-label="Converted ammount" type="number" name='to_ammount' id="to_ammount" placeholder="Enter details and press convert" form="input_form" oninput="convert(1);" />
-            <button class="btn" onclick="convert();" form="input_form" id="convert_btn" hidden>convert</button>
+            <fieldset name="from">
+                    <label for="from_currency">Source ammount:</label>
+                    <datalist id="from_list_country"></datalist>
+                    <select id="from_currency" form="input_form" onchange="fetch_conversions(1);" />
+                    <input aria-label="Ammount to convert" type="number" name="from_ammount" id="from_ammount" placeholder="Enter an ammount" autofocus autocomplete="off" form="input_form" oninput="convert();" />
+            </fieldset>
+            <fieldset name="to">
+                    <label for="to_currency">Converted ammount:</label>
+                    <datalist id="from_list_country"></datalist>
+                    select a currency
+                    <select id="to_currency" form="input_form" onchange="fetch_conversions(1);" />
+                    <input aria-label="Converted ammount" type="number" name='to_ammount' id="to_ammount" placeholder="Enter an ammount" form="input_form" oninput="convert(1);" />
+            </fieldset>
         </form>
 
         <footer>
             <caption>
                 <div class="attribution">
-                    Favicon and app icon Made by <a href="https://www.flaticon.com/authors/eucalyp" title="Eucalyp">Eucalyp</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>
+                    App icon Made by <a href="https://www.flaticon.com/authors/eucalyp" title="Eucalyp">Eucalyp</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a>
                 </div>
             </caption>
         </footer>
-        <script>
-            //get from currency list from db or net
-            get_currencies();
+        <script type="text/javascript">
+            function downloadJSAtOnload() {
+                scripts = ['./static/js/app.js', './static/js/init.js'];
+                for (sfile of scripts){
+                    let element = document.createElement("script");
+                    element.src = sfile;
+                    document.body.appendChild(element);
+                }
+            }
+            if (window.addEventListener)
+                window.addEventListener("load", downloadJSAtOnload, false);
+            else if (window.attachEvent)
+                window.attachEvent("onload", downloadJSAtOnload);
+            else window.onload = downloadJSAtOnload;
         </script>
     </body>
 </html>
