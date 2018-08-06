@@ -39,11 +39,11 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
-    console.log('[service worker]: fetching from sw');
+    //console.log('[service worker]: fetching from sw');
     requrl = new URL(event.request.url);
 
     
-    if(requrl.hostname == "free.currencyconverterapi.com"){
+    /*if(requrl.hostname == "free.currencyconverterapi.com"){
         if(requrl.pathname === "/api/v6/currencies"){
             event.respondWith(
                 db_promise.then(db => {
@@ -89,7 +89,7 @@ self.addEventListener('fetch', event => {
             );
             return;
         }
-    }
+    }*/
 
     event.respondWith(        
         caches.match(event.request).then(response => response || fetch(event.request), error => {

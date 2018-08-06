@@ -40,11 +40,5 @@ function update_ready(worker){
     worker.postMessage({action: 'skipwaiting'});
 }
 
-function start(){
-    register_serviceWorker();
-    get_currencies();
-    get_countries();
-    get_location();
-}
 
-start();
+register_serviceWorker();

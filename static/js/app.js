@@ -1,6 +1,6 @@
 let lastused = false;
 let countries = [];
-let local_currency = '';
+let local_currency;
 let rate = 0;
 /*
 * gets the list of currencies from the api using a fetch() call,
@@ -8,8 +8,10 @@ let rate = 0;
 */
  function get_currencies() {
     console.log('getting currencies');
-    fetch('https://free.currencyconverterapi.com/api/v6/currencies').then(response => set_lists(response), 
-        error => console.log('Failed to get currencies: ', error));
+    fetch('https://free.currencyconverterapi.com/api/v6/currencies')
+    .then(response => {if (response.ok) return response.json()},
+         error => console.log('Failed to get currencies: ', error))
+            .then(response => set_lists(response['results']));
 }
 
 /*
@@ -19,8 +21,10 @@ let rate = 0;
 function set_lists(currencies = {}){
     //TODO: check for empty obj here
     //TODO: get last used here
+    console.log('local currency is: ', local_currency)
     entries = Object.entries(currencies);
         for(currency of entries){
+            currency = currency[1];
             
             const from_list = document.getElementById('from_currency');
             const to_list = document.getElementById('to_currency');
@@ -36,13 +40,18 @@ function set_lists(currencies = {}){
                 if(currency.id === lastused['from']) opt.setAttribute('selected', '');
                 if(currency.id === lastused['to']) opt2.setAttribute('selected', '');
             } else {
-                if(currency.id === 'USD') opt.setAttribute('selected', '');
-                if(currency.id === local_currency) opt2.setAttribute('selected', '');
+                if(currency.id === 'USD') {
+                    opt.setAttribute('selected', '');
+                }
+                if(currency.id === local_currency) {
+                    opt2.setAttribute('selected', '');
+                }
             }
 
             from_list.appendChild(opt);
             to_list.appendChild(opt2);
         }
+        fetch_conversions();
 }
 
 function iploc(){
@@ -80,21 +89,27 @@ function get_country(latitude = 0.0, longitude = 0.0){
 
 function get_country_currency(country = 'France'){
     //TODO: Logic here. set the localcurrency val here
-    console.log(countries);
+    console.log('Country is ', country)
     for (cn of countries){
         if(cn.name.toLowerCase().startsWith(country.toLowerCase())){
             local_currency = cn.currencyId
-        }
+        }        
     }
+    console.log('local currency is ', local_currency)
 }
 
 function get_countries(){
     console.log('getting countries list');
     fetch('https://free.currencyconverterapi.com/api/v6/countries')
         .then(response => {
-            console.log(response.clone().json())
+            //console.log(response.json())
             if (response.ok) return response.json()})
-                .then(data => countries = data);
+                .then(data => {
+                    
+                    for (country of Object.entries(data['results'])){
+                        countries.push(country[1]);
+                    }
+                });
 }
 
 function convert(from = 0){
@@ -121,8 +136,8 @@ function convert(from = 0){
 }
 
 function fetch_conversions(reason = 0){
-    from_currency = document.getElementById('from_currency');
-    to_currency = document.getElementById('to_currency');
+    from_currency = document.getElementById('from_currency').value;
+    to_currency = document.getElementById('to_currency').value;
 
     const query = `${from_currency}_${to_currency}`;
     const query2 = `${to_currency}_${from_currency}`;
@@ -131,8 +146,18 @@ function fetch_conversions(reason = 0){
 
     fetch(query_url).then(response => {
         rate = response;
+        console.log(rate)
         if (reason == 1) {
             convert()
         }
     });
 }
+
+
+function start(){
+    get_currencies();
+    get_countries();
+    get_location();
+}
+
+start();
