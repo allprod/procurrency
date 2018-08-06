@@ -28,21 +28,6 @@
         <p class="header_subtitle">Mobile currency convertion progressive web app</p>
     </header>
     <body onload="window.scrollTo(0, 1);">
-        <form id="input_form" onsubmit="return convert()" class="container">
-            <fieldset name="from">
-                    <label for="from_currency">Source ammount:</label>
-                    <datalist id="from_list_country"></datalist>
-                    <select id="from_currency" form="input_form" onchange="fetch_conversions(1);" />
-                    <input aria-label="Ammount to convert" type="number" name="from_ammount" id="from_ammount" placeholder="Enter an ammount" autofocus autocomplete="off" form="input_form" oninput="convert();" />
-            </fieldset>
-            <fieldset name="to">
-                    <label for="to_currency">Converted ammount:</label>
-                    <datalist id="from_list_country"></datalist>
-                    select a currency
-                    <select id="to_currency" form="input_form" onchange="fetch_conversions(1);" />
-                    <input aria-label="Converted ammount" type="number" name='to_ammount' id="to_ammount" placeholder="Enter an ammount" form="input_form" oninput="convert(1);" />
-            </fieldset>
-        </form>
 
         <footer>
             <caption>
