@@ -69,3 +69,47 @@ function fetch_conversions(reason = 0){
             }
         });
 }
+
+function iploc(){
+    console.log('Retrieving location from ip address');
+    fetch('http://ip-api.com/json').then(response => {
+        if(response.ok) return response.json();
+    }).then(response => get_country_currency(response.country));
+}
+
+ function get_location(){
+    console.log('getting loc');
+    if(navigator.geolocation){
+        navigator.geolocation.getCurrentPosition(position => {
+            get_country(position.coords.latitude, position.coords.longitude);
+        }, error => {
+            console.log('Error retrieving location: ', error);
+            iploc();
+        });
+    } else {
+        console.log('Geolocation error: Location not enabled in browser');
+        iploc();
+    }
+}
+
+function get_country(latitude = 0.0, longitude = 0.0){
+    console.log('getting country');
+    url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}`;
+    fetch(url).then(response => {
+        if(response.ok) return response.json()
+    }).then(response => {
+        country = response["results"][0]["address_components"][6]["long_name"]
+        get_country_currency(country)
+    });
+}
+
+function get_country_currency(country = 'France'){
+    //TODO: Logic here. set the localcurrency val here
+    console.log('Country is ', country)
+    for (cn of countries){
+        if(cn.name.toLowerCase().startsWith(country.toLowerCase())){
+            local_currency = cn.currencyId
+        }        
+    }
+    console.log('local currency is ', local_currency)
+}
