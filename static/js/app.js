@@ -150,3 +150,11 @@ function convert(from = 0){
 
     to_amt.value = ammount.toFixed(3);
 }
+
+function start(){
+    get_currencies();
+    get_countries();
+    get_location();
+}
+
+start();
