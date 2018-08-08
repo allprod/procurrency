@@ -113,3 +113,17 @@ function get_country_currency(country = 'France'){
     }
     console.log('local currency is ', local_currency)
 }
+
+function get_countries(){
+    console.log('getting countries list');
+    fetch('https://free.currencyconverterapi.com/api/v6/countries')
+        .then(response => {
+            //console.log(response.json())
+            if (response.ok) return response.json()})
+                .then(data => {
+                    
+                    for (country of Object.entries(data['results'])){
+                        countries.push(country[1]);
+                    }
+                });
+}
