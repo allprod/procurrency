@@ -42,55 +42,6 @@ self.addEventListener('fetch', event => {
     //console.log('[service worker]: fetching from sw');
     requrl = new URL(event.request.url);
 
-    
-    /*if(requrl.hostname == "free.currencyconverterapi.com"){
-        if(requrl.pathname === "/api/v6/currencies"){
-            event.respondWith(
-                db_promise.then(db => {
-                    const tx = db.transaction(currency_store_name, 'readonly');
-                    const store = tx.objectStore(currency_store_name);
-                    return store.getAll().then(data => {
-                        console.log('The currencies are: ', data)
-                        return data;
-                    });
-                }).then(response => {
-                    if(response.legth == 0) return new Response(JSON.stringify(fetch_cache_countries()), { "status" : 200 });
-                    return new Response(response, { "status" : 200 })
-                    })
-            );
-            return;
-        }
-        else if(requrl.pathname == "/api/v6/countries"){
-            event.respondWith(
-                db_promise.then(db => {
-                    const tx = db.transaction(country_store_name, 'readonly');
-                    const store = tx.objectStore(country_store_name);
-                    return store.getAll().then(data => {
-                        console.log('Countries are: ', data);
-                        return data;
-                    });
-                }).then(response => {
-                    if(response.legth == 0) return new Response(new JSON.stringify(fetch_cache_countries()) , { "status" : 200 });
-                    return new Response(response, { "status" : 200 })
-                    })
-            );
-            return;
-        }
-        else if(requrl.pathname == "/api/v6/convert"){
-            event.respondWith(
-                db_promise.then(db => {
-                    const tx = db.transaction(conversion_store_name, 'readonly');
-                    const store = tx.objectStore(conversion_store_name);
-                    return store.getAll().then(data => data);
-                }).then(response => {
-                    if(response.legth == 0) return new Response(JSON.stringify(fetch_cache_rate(requrl)), { "status" : 200 });
-                    return new Response(response, { "status" : 200 })
-                    })
-            );
-            return;
-        }
-    }*/
-
     event.respondWith(        
         caches.match(event.request).then(response => response || fetch(event.request), error => {
             console.log('[SW]: fetch: error: ', error.message)
@@ -132,6 +83,7 @@ function open_db() {
             }
             case 1: {
                 const curency_store = upgradeDB.createObjectStore(currency_store_name, {
+                    keyPath: 'id'
                 });
                 const country_store = upgradeDB.createObjectStore(country_store_name, {
                 });
@@ -152,9 +104,10 @@ function make_money({currency_name = 'fake money', currency_symbol = 'replace me
     return {currencyName: currency_name, currencySymbol: currency_symbol, id: id};
 }
 
-async function fetch_cache_currencies(){
+function fetch_cache_currencies(){
     console.log('[SW]: fetching currencies: ')
     let currencies = [];
+    //TODO: Add db get and return here
     await fetch('https://free.currencyconverterapi.com/api/v6/currencies').then(response => {
         if(response.ok){
             return response.json();
@@ -173,7 +126,7 @@ async function fetch_cache_currencies(){
         return currencies;
 }
 
-async function cache_currencies(currency_objs){
+function cache_currencies(currency_objs){
     db_promise.then(db => {
         if(!db) return;
 
@@ -192,7 +145,7 @@ async function cache_currencies(currency_objs){
         .catch( error => console.log('[SW]: idb currency fetch error: ', error.message));
 }
 
-async function fetch_cache_countries(){
+function fetch_cache_countries(){
     let countries = [];
     await fetch('https://free.currencyconverterapi.com/api/v6/countries').then(response => {
         if(response.ok) return response.json;
@@ -208,7 +161,7 @@ async function fetch_cache_countries(){
     return countries;
 }
 
-async function cache_countries(countries){
+function cache_countries(countries){
     console.log('[SW]: use promise');
     db_promise.then(db => {
         if(!db) return;
@@ -226,7 +179,7 @@ async function cache_countries(countries){
         .catch( error => console.log('[SW]: idb currency fetch error: ', error.message));
 }
 
-async function fetch_cache_rate(url = {}){
+function fetch_cache_rate(url = {}){
     const conversions = url.searchParams.get('q');
     let rate;
 

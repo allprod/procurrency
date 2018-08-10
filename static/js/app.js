@@ -1,3 +1,8 @@
+let lastused = false;
+let countries = [];
+let local_currency = 'BTC';
+let rate = 0;
+
 /*
 * gets the list of currencies from the api using a fetch() call,
 * then calls @method{set_lists()} with the list of returned currencies
@@ -53,6 +58,7 @@ function set_lists(currencies = {}){
 }
 
 function fetch_conversions(reason = 0){
+    rate = 0;
     from_currency = document.getElementById('from_currency').value;
     to_currency = document.getElementById('to_currency').value;
 
@@ -94,11 +100,13 @@ function iploc(){
 
 function get_country(latitude = 0.0, longitude = 0.0){
     console.log('getting country');
+    console.log(`Latitude: ${latitude}, Longitude: ${longitude}`)
     url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}`;
     fetch(url).then(response => {
         if(response.ok) return response.json()
     }).then(response => {
-        country = response["results"][0]["address_components"][6]["long_name"]
+        res = response["results"]
+        country = res[res.length - 1]['formatted_address']
         get_country_currency(country)
     });
 }
