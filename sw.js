@@ -104,10 +104,24 @@ function make_money({currency_name = 'fake money', currency_symbol = 'replace me
     return {currencyName: currency_name, currencySymbol: currency_symbol, id: id};
 }
 
-function fetch_cache_currencies(){
+function get_currencies(){
+    db_promise.then(db => {
+        if(!db){
+            return;
+        }
+        const index = db.transaction(currency_store_name).objectStore(currency_store_name).index('name');
+
+        index.getAll().then(currencies => {
+            //TODO: Check validity o data here
+            //TODO: Add a call to fetch currencies if the data is invalid here.
+        })
+    });
+}
+
+function fetch_currencies(){
     console.log('[SW]: fetching currencies: ')
     let currencies = [];
-    //TODO: Add db get and return here
+
     await fetch('https://free.currencyconverterapi.com/api/v6/currencies').then(response => {
         if(response.ok){
             return response.json();
@@ -136,16 +150,19 @@ function cache_currencies(currency_objs){
         const store = trans.objectStore(currency_store_name);
         
         console.log('[SW]: putting');
-        for (currency of currency_objs){
-            store.put(currency, currency.id);
-        }
+        store.put(currency_objs)
+        //for (currency of currency_objs){
+        //    store.put(currency);
+        //}
         console.log('[SW]: put');
         //get_currencies();
-    }, error => console.log('[SW]: Error querying idb: ', error.message))
-        .catch( error => console.log('[SW]: idb currency fetch error: ', error.message));
+    }, error => console.log('[SW]: Error Storing into idb: ', error.message))
+        //TODO: .catch( error => console.log('[SW]: idb currency fetch error: ', error.message));
 }
 
-function fetch_cache_countries(){
+//TODO: Add get countries method here
+
+function fetch_countries(){
     let countries = [];
     await fetch('https://free.currencyconverterapi.com/api/v6/countries').then(response => {
         if(response.ok) return response.json;
@@ -179,6 +196,9 @@ function cache_countries(countries){
         .catch( error => console.log('[SW]: idb currency fetch error: ', error.message));
 }
 
+//TODO: add get conversion method here
+
+//FIXME: Sepparate logic of fetch and cache here.
 function fetch_cache_rate(url = {}){
     const conversions = url.searchParams.get('q');
     let rate;
@@ -197,3 +217,5 @@ function fetch_cache_rate(url = {}){
     });
     return rate;
 }
+
+//TODO: Add cache conversion rate method here.
