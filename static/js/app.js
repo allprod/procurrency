@@ -136,23 +136,15 @@ function get_countries(){
                 });
 }
 
-function convert(from = 0){
-    from_currency = document.getElementById('from_currency');
-    to_currency = document.getElementById('to_currency');
+function convert(){
+    const from_currency = document.getElementById('from_currency');
+    const to_currency = document.getElementById('to_currency');
 
-    // If the conversion is called normally we convert as normal
-    let from_amt;
-    let to_amt;
-    if(from == 0){
-        from_amt = document.getElementById('from_ammount');
-        to_amt = document.getElementById('to_ammount');
-    } 
-    // If the convertion is called from bottom input we'll swap the two around
-    else {
-        from_amt = document.getElementById('to_ammount');
-        to_amt = document.getElementById('from_ammount');
-    }
-
+    
+    const from_amt = document.getElementById('from_ammount');
+    const to_amt = document.getElementById('to_ammount');
+     
+    
     const source_ammount = parseFloat(from_amt.value, 10);
     const ammount = rate * source_ammount;
 
