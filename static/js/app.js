@@ -133,7 +133,26 @@ function get_countries(){
                     for (country of Object.entries(data['results'])){
                         countries.push(country[1]);
                     }
+                    set_countries()
                 });
+}
+
+function set_countries(){
+    const from = document.getElementById('from_country');
+    const to = document.getElementById('to_country');
+
+    for (country of countries){
+        const opt = document.createElement("option");
+        const opt2 = document.createElement("option");
+        //TODO: Check if this is correct:
+        opt.textContent = `${country.name}`;
+        opt.setAttribute('value', country.currency);
+        opt2.textContent = `${country.name}`;
+        opt2.setAttribute('value', country.currency);
+
+        from_list.appendChild(opt);
+        to_list.appendChild(opt2);
+    }
 }
 
 function convert(){

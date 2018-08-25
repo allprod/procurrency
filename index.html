@@ -28,15 +28,16 @@
                 <form id="input_form" onsubmit="return convert()" class="container">
                     <fieldset name="From" aria-label="From" class="box tos">
                         <label for="from_country">Type a country:</label>
-                        <datalist id='from_country' aria-placeholder="From Country"/>
+                        <datalist id='from_country' aria-placeholder="From Country"></datalist> <br/>
+                        Or <br/>
                         <label for="from_currency">Select a currency:</label>
-                                
                         <select id="from_currency" form="input_form" onchange="convert();" />
                         <input aria-label="Ammount to convert" type="number" name="from_ammount" id="from_ammount" placeholder="Source currency ammount" autofocus autocomplete="off" form="input_form" oninput="convert();" />
                     </fieldset>
                     <fieldset name="To" aria-label="To" class="box tos">
                         <label for="to_country">Type a country:</label>
-                        <datalist id='to_country' aria-placeholder="To Country"/>
+                        <datalist id='to_country' aria-placeholder="To Country"></datalist> <br/>
+                        Or <br/>
                         <label for="to_currency">Select a currency:</label>
                         <select id="to_currency" form="input_form" onchange="convert();" />
                         <output aria-label="Converted ammount" name='to_ammount' id="to_ammount" form="input_form" />
