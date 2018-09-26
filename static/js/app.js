@@ -123,10 +123,9 @@ function get_country_currency(country = 'France'){
 }
 
 function get_countries(){
-    console.log('getting countries list');
+    console.log('getting countries');
     fetch('https://free.currencyconverterapi.com/api/v6/countries')
         .then(response => {
-            //console.log(response.json())
             if (response.ok) return response.json()})
                 .then(data => {
                     

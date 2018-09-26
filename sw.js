@@ -20,6 +20,9 @@ const img_urls = [
 ];
 
 let db_promise;
+let countries = [];
+let currencies = [];
+let rates;
 
 self.addEventListener('install', event => {
     console.log('[service worker]: installing sw');
@@ -55,6 +58,10 @@ self.addEventListener('message', event => {
 });
 
 function house_keeping(){
+
+    cache_countries();
+    cache_currencies();
+
     caches.keys().then(cache_names => Promise.all(
         cache_names.filter(cache_name => cache_name.startsWith('procurrency-') && !all_caches.includes(cache_name)
             ).map(cache_name => caches.delete(cache_name))
@@ -71,6 +78,9 @@ function cache_assets(){
             console.log('[SW: install]: caught:', error.message)
             //TODO: Cache enough to not throw on chrome mobi but also look okay
         });
+    
+        fetch_countries();
+        fetch_currencies();
 }
 
 function open_db() {
@@ -111,18 +121,18 @@ function get_currencies(){
         }
         const index = db.transaction(currency_store_name).objectStore(currency_store_name).index('name');
 
-        index.getAll().then(currencies => {
+        index.getAll().then(data => {
             //TODO: Check validity o data here
             //TODO: Add a call to fetch currencies if the data is invalid here.
+            currencies = data;
         })
     });
 }
 
 function fetch_currencies(){
     console.log('[SW]: fetching currencies: ')
-    let currencies = [];
 
-    await fetch('https://free.currencyconverterapi.com/api/v6/currencies').then(response => {
+    fetch('https://free.currencyconverterapi.com/api/v6/currencies').then(response => {
         if(response.ok){
             return response.json();
         }
@@ -134,10 +144,7 @@ function fetch_currencies(){
                     currency = make_money({currency_name : entry[1].currencyName, currency_symbol: entry[1].currencySymbol, id: entry[1].id});
                     currencies.push(currency);
                 }
-                cache_currencies(currencies);
-                console.log('Returning fetched data');
         });
-        return currencies;
 }
 
 function cache_currencies(currency_objs){
@@ -163,19 +170,14 @@ function cache_currencies(currency_objs){
 //TODO: Add get countries method here
 
 function fetch_countries(){
-    let countries = [];
-    await fetch('https://free.currencyconverterapi.com/api/v6/countries').then(response => {
+    fetch('https://free.currencyconverterapi.com/api/v6/countries').then(response => {
         if(response.ok) return response.json;
     }).then(response => {
 
         for(country of Object.entries(response['results'])){
             countries.push(country[1]);
         }
-        console.log('[SW]: calling cache county');
-        cache_countries(countries);
-        console.log('[SW]: returning counties');
     });
-    return countries;
 }
 
 function cache_countries(countries){
@@ -199,23 +201,38 @@ function cache_countries(countries){
 //TODO: add get conversion method here
 
 //FIXME: Sepparate logic of fetch and cache here.
-function fetch_cache_rate(url = {}){
+function fetch_rate(url = {}){
     const conversions = url.searchParams.get('q');
-    let rate;
 
-    await fetch(url).then(response => {if (response.ok){return response.json()}}).then(response => {
+    fetch(url).then(response => {if (response.ok){return response.json()}}).then(response => {
         const queries = conversions.split(',');
-        const res = response[queries[0]];
-        db_promise.then(db => {
-            const store = db.transaction(conversion_store_name, 'readwrite').objectStore(conversion_store_name);
-            // Store the conversion rate for the currency pair
-            store.put(res, queries[0]);
-            // Store the converse rate for fetch efficiency (save on calls to API)
-            store.put(response[queries[1]], queries[1]);
-        }).catch(error => console.log('[SW]: fetch_cache_conv: caching error: ', error.message));
-        rate = res;
+        const r1 = queries[0];
+        const r2 = queries[1];
+        rates = {r1: response[queries[0]], r2: response[queries[1]],};  
     });
-    return rate;
 }
 
+function cache_rate(url = {}){
+    const conversions = url.searchParams.get('q');
+    const queries = conversions.split(',');
+    db_promise.then(db => {
+        const store = db.transaction(conversion_store_name, 'readwrite').objectStore(conversion_store_name);
+        // Store the conversion rate for the currency pair
+        store.put(rates[queries[0]], queries[0]);
+        // Store the converse rate for fetch efficiency (save on calls to API)
+        store.put(rates[queries[1]], queries[1]);
+    }).catch(error => console.log('[SW]: fetch_cache_conv: caching error: ', error.message));
+}
+
+function setCountries(){
+    fetch('https://free.currencyconverterapi.com/api/v6/countries')
+        .then(response => {
+            if (response.ok) return response.json()})
+                .then(data => {
+                    
+                    for (country of Object.entries(data['results'])){
+                        countries.push(country[1]);
+                    }
+                });
+}
 //TODO: Add cache conversion rate method here.
