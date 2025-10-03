@@ -1,6 +1,8 @@
 const static_cache_name = 'procurrency-static-v3';
 const img_cache_name = 'procurrency-img-v1';
 const dynamic_obj_cache_name = 'procurrency-dynamic-v1';
+const precache_object_cache_name = 'procurrency-precached-v1';
+const precachedURLs = []
 const all_caches = [
     {
         name: static_cache_name, urls: [
@@ -18,7 +20,10 @@ const all_caches = [
         ]
     },
     {
-        name: dynamic_obj_cache_name, urls:[]
+        name: dynamic_obj_cache_name, urls: []
+    },
+    {
+        name: precache_object_cache_name, urls: precachedURLs
     }
 ];
 
@@ -41,7 +46,6 @@ self.addEventListener('install', event => {
     );
 });
 
-
 self.addEventListener('activate', event => {
     console.log('[service worker]: activating sw');
     event.waitUntil(
@@ -49,55 +53,61 @@ self.addEventListener('activate', event => {
             cache_names.filter(cache_name => cache_name.startsWith('procurrency-') && !all_caches.includes(cache_name)
             ).map(cache_name => caches.delete(cache_name))
         )
-        )
-    );
+    ));
     //Claim this domain as the client of this SW, making immediate activation on new installs
     self.clients.claim();
 });
 
-
 self.addEventListener('fetch', event => {
-    const { request} = event;
+    const { request } = event;
     const url = new URL(request.url);
     let cacheName = ''
 
+    if(precachedURLs.includes(url.pathname)){
+        event.respondWith(cacheOnly(request));
+    }
     // use Cache-First for static assets
-    if(request.destination === 'style' || request.destination === 'script' || request.destination === 'font' || url.pathname.match(/\.(css|js|woff2?|ttf|eot)$/)){
+    if (request.destination === 'style' || request.destination === 'script' || request.destination === 'font' || url.pathname.match(/\.(css|js|woff2?|ttf|eot)$/)) {
         cacheName = static_cache_name;
         event.respondWith(cacheFirst(request, cacheName));
     }
     // use Stale While Revalidate for images
-    else if (request.destination === 'image' || url.pathname.match(/\.(jpg|jpeg|png|gif|webp|svg|ico)$/)){
+    else if (request.destination === 'image' || url.pathname.match(/\.(jpg|jpeg|png|gif|webp|svg|ico)$/)) {
         cacheName = img_cache_name
         event.respondWith(staleWhileRevalidate(request, cacheName))
     }
     // NetworkFirst for everything else
-    else{
+    else {
         cacheName = dynamic_obj_cache_name
         event.respondWith(networkFirst(request, cacheName))
     }
 });
 
-const cacheFirst = async (request, cacheName) =>{
+self.addEventListener('message', event => {
+    console.log('[service worker]: handling message');
+    if (event.data.uresponse === 'skipwaiting') self.skipWaiting();
+});
+
+const cacheFirst = async (request, cacheName) => {
     const cached = await caches.match(request);
-    if(cached){
-        console.log('[SW] Cache hit: ',request.url);
+    if (cached) {
+        console.log('[SW] Cache hit: ', request.url);
         return cached
     }
     try {
         const response = await fetch(request);
-        if(response.ok){
+        if (response.ok) {
             const cache = await caches.open(cacheName);
             cache.put(request, response.clone());
         }
         return response;
-    } catch (error){
+    } catch (error) {
         console.error('[SW] Cache first failed: ', error.message);
         throw error;
     }
 }
 
-const networkFirst = async  (request,  cacheName) => {
+const networkFirst = async (request, cacheName) => {
     try {
         const response = await fetch(request);
         if (response.ok) {
@@ -129,9 +139,7 @@ const staleWhileRevalidate = async (request, cacheName) => {
     return cached || fetchPromise; // immediately returns cached response, if not cached it calls network and returns response
 }
 
+const cacheOnly = async (request) => {
+    return await caches.match(request);
+}
 
-
-self.addEventListener('message', event => {
-    console.log('[service worker]: handling message');
-    if (event.data.uresponse === 'skipwaiting') self.skipWaiting();
-});
