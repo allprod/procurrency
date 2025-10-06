@@ -59,8 +59,8 @@ function set_lists(currencies = {}){
 
 function fetch_conversions(reason = 0){
     rate = 0;
-    from_currency = document.getElementById('from_currency').value;
-    to_currency = document.getElementById('to_currency').value;
+    const from_currency = document.getElementById('from_currency').value;
+    const to_currency = document.getElementById('to_currency').value;
 
     const query = `${from_currency}_${to_currency}`;
     const query2 = `${to_currency}_${from_currency}`;
@@ -155,8 +155,6 @@ function set_countries(){
 }
 
 function convert(){
-    const from_currency = document.getElementById('from_currency');
-    const to_currency = document.getElementById('to_currency');
 
     
     const from_amt = document.getElementById('from_ammount');
@@ -167,6 +165,18 @@ function convert(){
     const ammount = rate * source_ammount;
 
     to_amt.value = ammount.toFixed(3);
+}
+
+function swap_currencies(){
+    const from_currency_elem = document.getElementById('from_currency');
+    const to_currency_elem = document.getElementById('to_currency');
+    
+    const temp = from_currency_elem.value;
+    from_currency_elem.value = to_currency.value;
+    to_currency_elem.value = temp;
+
+    fetch_conversions(reason=1);
+    convert()
 }
 
 function start(){
