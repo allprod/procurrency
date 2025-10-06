@@ -16,9 +16,6 @@
         <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
         <link rel="icon" href="/favicon.ico" type="image/x-icon">
         <link rel="apple-touch-icon" sizes="192x192" href="./images/icons/icon-192.png"/>
-        <link rel="stylesheet" type="text/css" media="screen" href="./static/css/main.css" />
-        <script src="./static/js/idb.js"></script>
-        <script src="./static/js/main.js"></script>
         <meta name="msapplication-TileImage" content="./images/icons/icon-144.png" />
         <meta name="msapplication-TileColor" content="#26c6da" />
     </head>
@@ -27,15 +24,29 @@
         <p class="header_subtitle">Mobile currency convertion progressive web app</p>
     </header>
     <body onload="window.scrollTo(0, 1);">
-        <form id="input_form" onsubmit="return convert()" class="container">
-            <label for="from_currency">Source ammount:</label>
-            <select id="from_currency" form="input_form" onchange="convert();" />
-            <input aria-label="Ammount to convert" type="number" name="from_ammount" id="from_ammount" placeholder="Source currency ammount" autofocus autocomplete="off" form="input_form" oninput="convert();" />
-            <label for="to_currency">Converted ammount:</label>
-            <select id="to_currency" form="input_form" onchange="convert();" />
-            <input aria-label="Converted ammount" contenteditable="false" type="number" name='to_ammount' id="to_ammount" placeholder="Enter details and press convert" form="input_form" oninput="convert();" />
-            <button class="btn" onclick="convert();" form="input_form" id="convert_btn" hidden>convert</button>
-        </form>
+        <div class="card">
+                <form id="input_form" onsubmit="return convert()" class="container">
+                    <fieldset name="From" aria-label="From" class="box tos">
+                        <label for="from_country">Type a country:</label>
+                        <datalist id='from_country' aria-placeholder="From Country"></datalist> <br/>
+                        Or <br/>
+                        <label for="from_currency">Select a currency:</label>
+                        <select id="from_currency" form="input_form" onchange="convert();" />
+                        <input aria-label="Ammount to convert" type="number" name="from_ammount" id="from_ammount" placeholder="Source currency ammount" autofocus autocomplete="off" form="input_form" oninput="convert();" />
+                    </fieldset>
+                    <fieldset name="To" aria-label="To" class="box tos">
+                        <label for="to_country">Type a country:</label>
+                        <datalist id='to_country' aria-placeholder="To Country"></datalist> <br/>
+                        Or <br/>
+                        <label for="to_currency">Select a currency:</label>
+                        <select id="to_currency" form="input_form" onchange="convert();" />
+                        <output aria-label="Converted ammount" name='to_ammount' id="to_ammount" form="input_form" />
+                    </fieldset>
+                    <div class="box c_btn">
+                        <button class="btn" onclick="convert();" form="input_form" id="convert_btn" hidden>convert</button>
+                    </div>
+                </form>
+        </div>
 
         <footer>
             <caption>
@@ -45,8 +56,6 @@
             </caption>
         </footer>
         <script>
-            //get from currency list from db or net
-            get_currencies();
         </script>
     </body>
 </html>
